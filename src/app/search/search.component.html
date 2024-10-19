@@ -1,4 +1,4 @@
 <p>search works!</p>
-<div *ngFor="let result of searchResults">
+@for (result of searchResults; track result.id) {
   <app-item [result]="result"></app-item>
-</div>
+}
