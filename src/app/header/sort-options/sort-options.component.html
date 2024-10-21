@@ -1,0 +1,12 @@
+<mat-chip-listbox
+  hideSingleSelectionIndicator
+  class="w-full"
+  aria-label="Sorted by"
+  (change)="onSelectionChange($event)"
+>
+  @for (item of sortOptions; track item) {
+    <mat-chip-option [value]="item" [selected]="item === currentSortOption" [highlighted]="item === currentSortOption"
+      >{{ item }}
+    </mat-chip-option>
+  }
+</mat-chip-listbox>

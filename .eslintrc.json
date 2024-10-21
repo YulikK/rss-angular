@@ -41,7 +41,7 @@
       "settings": {
         "import/resolver": {
           "alias": {
-            "extensions": [".ts", ".js", ".jsx", ".json"],
+            "extensions": [".ts", ".js", ".mjs", ".jsx", ".json"],
             "map": [["@", "./src"]]
           }
         }
@@ -50,6 +50,13 @@
     {
       "files": ["*.html"],
       "extends": ["plugin:@angular-eslint/template/recommended"],
+      "rules": {}
+    },
+    {
+      "files": ["*.mjs"],
+      "parserOptions": {
+        "sourceType": "module"
+      },
       "rules": {}
     }
   ]

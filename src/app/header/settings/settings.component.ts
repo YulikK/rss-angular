@@ -1,12 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [],
+  imports: [MatButtonModule],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss'
+  styleUrl: './settings.component.scss',
 })
 export class SettingsComponent {
+  isSettingsShow = false;
 
+  @Output() toggleSettingsShowEvent = new EventEmitter<boolean>();
+
+  toggleSettingsShow() {
+    this.isSettingsShow = !this.isSettingsShow;
+    this.toggleSettingsShowEvent.emit(this.isSettingsShow);
+  }
 }
