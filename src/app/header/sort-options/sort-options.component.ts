@@ -18,6 +18,5 @@ export class SortOptionsComponent {
   onSelectionChange(event: MatChipListboxChange) {
     this.currentSortOption = event.value;
     this.sortChange.emit(this.currentSortOption);
-    console.log(`Sorting by ${this.currentSortOption} order`);
   }
 }

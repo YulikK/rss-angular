@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 
@@ -12,7 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 export class FilterFormComponent {
   filterText: string = '';
 
+  @Output() filterChange = new EventEmitter<string>();
+
   onSubmit() {
-    console.log('Filter text:', this.filterText);
+    this.filterChange.emit(this.filterText);
   }
 }

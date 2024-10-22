@@ -39,8 +39,14 @@ export class HeaderComponent {
 
   @Output() sortChange = new EventEmitter<string | null>();
 
+  @Output() filterChange = new EventEmitter<string>();
+
   toggleSettingsShow(isSettingsShow: boolean) {
     this.isSettingsShow = isSettingsShow;
+  }
+
+  onFilterChange(filterText: string) {
+    this.filterChange.emit(filterText);
   }
 
   onSortChange(sortOption: string | null) {

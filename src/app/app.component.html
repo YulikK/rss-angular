@@ -1,3 +1,3 @@
-<app-header (sortChange)="onSortChange($event)"></app-header>
-<app-search [searchResults]="searchResults"></app-search>
+<app-header (sortChange)="onSortChange($event)" (filterChange)="onFilterChange($event)"></app-header>
+<app-search [searchResults]="videoList"></app-search>
 <router-outlet></router-outlet>

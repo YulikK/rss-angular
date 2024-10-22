@@ -7,7 +7,7 @@
   @if (isSettingsShow) {
     <div @toggleSettingsShow class="flex items-center gap-4">
       <app-sort-options (sortChange)="onSortChange($event)"></app-sort-options>
-      <app-filter-form></app-filter-form>
+      <app-filter-form (filterChange)="onFilterChange($event)"></app-filter-form>
     </div>
   }
 </header>

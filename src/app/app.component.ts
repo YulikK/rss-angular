@@ -15,32 +15,61 @@ import { SearchService } from './search/search.service';
 export class AppComponent implements OnInit {
   title = 'youtube-app';
 
+  sortType: string | null = null;
+
+  filterText: string = '';
+
   searchResults: YouTubeVideo[] = [];
 
-  sortedData: YouTubeVideo[] = [];
+  videoList: YouTubeVideo[] = [];
 
   private searchService: SearchService = new SearchService();
 
   ngOnInit(): void {
     this.searchService.getSearchResults().subscribe((results) => {
       this.searchResults = results;
-      this.sortedData = results;
+      this.videoList = results;
     });
   }
 
   onSortChange(sortOption: string | null) {
-    if (sortOption === 'New') {
-      this.sortedData.sort(
+    this.sortType = sortOption;
+    this.updateVideoList();
+  }
+
+  onFilterChange(filterText: string) {
+    this.filterText = filterText;
+    this.updateVideoList();
+  }
+
+  updateVideoList() {
+    this.videoList = [...this.searchResults];
+    this.makeFilter();
+    this.makeSort();
+  }
+
+  makeSort() {
+    if (!this.sortType) {
+      return;
+    }
+    if (this.sortType === 'New') {
+      this.videoList.sort(
         (a, b) => new Date(b.snippet.publishedAt).getTime() - new Date(a.snippet.publishedAt).getTime(),
       );
-    } else if (sortOption === 'Popular') {
-      this.sortedData.sort((a, b) => parseInt(b.statistics.viewCount, 10) - parseInt(a.statistics.viewCount, 10));
-    } else if (sortOption === 'Old') {
-      this.sortedData.sort(
+    } else if (this.sortType === 'Popular') {
+      this.videoList.sort((a, b) => parseInt(b.statistics.viewCount, 10) - parseInt(a.statistics.viewCount, 10));
+    } else if (this.sortType === 'Old') {
+      this.videoList.sort(
         (a, b) => new Date(a.snippet.publishedAt).getTime() - new Date(b.snippet.publishedAt).getTime(),
       );
-    } else {
-      this.sortedData = [...this.searchResults];
+    }
+  }
+
+  makeFilter() {
+    if (this.filterText) {
+      this.videoList = this.videoList.filter((video) =>
+        video.snippet.title.toLowerCase().includes(this.filterText.toLowerCase()),
+      );
     }
   }
 }
