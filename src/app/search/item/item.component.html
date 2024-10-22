@@ -1,0 +1,44 @@
+<div [ngClass]="['border-b-8', 'rounded-lg', 'h-full', getFreshColor()]">
+  <mat-card appearance="outlined" class="h-full border-ye">
+    <mat-card-content>
+      <div class="flex flex-col gap-2">
+        <img class="border-r-2 rounded-lg" [src]="getThumbnailUrl()" [alt]="result.snippet.title" />
+        <h6 class="mat-title-medium">{{ result.snippet.title }}</h6>
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <img src="img/user.png" alt="Like" class="w-[50px]" />
+              <div class="flex flex-col gap-1">
+                <p class="mat-title-medium">{{ result.snippet.channelTitle }}</p>
+                <p class="mat-label-medium">{{ result.statistics.viewCount | numberFormat }} views</p>
+              </div>
+            </div>
+            <mat-button-toggle-group name="feedback" aria-label="Feedback" hideSingleSelectionIndicator>
+              <mat-button-toggle value="like">
+                <div class="flex justify-center items-center gap-2">
+                  <img src="img/like.png" alt="Like" class="w-[24px]" />
+                  {{ result.statistics.likeCount | numberFormat }}
+                </div>
+              </mat-button-toggle>
+              <mat-button-toggle value="dislike">
+                <div class="flex justify-center items-center gap-2">
+                  {{ result.statistics.dislikeCount | numberFormat }}
+                  <img src="img/dislike.png" alt="Dislike" class="w-[24px] transform scale-x-[-1]" />
+                </div>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <div class="flex items-center gap-1">
+            <p class="mat-label-large">
+              {{ result.statistics.commentCount | numberFormat }} Comments
+              @for (tag of result.snippet.tags.slice(0, 3); track tag) {
+                #{{ tag }}
+              }
+            </p>
+          </div>
+          <p class="description">{{ result.snippet.description }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

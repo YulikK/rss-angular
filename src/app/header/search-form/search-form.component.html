@@ -1,0 +1,8 @@
+<form (ngSubmit)="onSubmit()" class="flex justify-center items-center gap-2">
+  <mat-form-field appearance="outline" class="my-input">
+    <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Search" />
+  </mat-form-field>
+  <button mat-icon-button color="primary" type="submit">
+    <img src="img/search.svg" alt="search icon" aria-hidden="false" aria-label="search icon" />
+  </button>
+</form>

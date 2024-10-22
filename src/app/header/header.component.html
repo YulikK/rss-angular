@@ -1,0 +1,13 @@
+<header class="flex flex-col p-2 gap-2">
+  <div class="flex justify-between items-center h-auto w-full">
+    <app-logo></app-logo>
+    <app-search-form></app-search-form>
+    <app-settings (toggleSettingsShowEvent)="toggleSettingsShow($event)"></app-settings>
+  </div>
+  @if (isSettingsShow) {
+    <div @toggleSettingsShow class="flex items-center gap-4">
+      <app-sort-options (sortChange)="onSortChange($event)"></app-sort-options>
+      <app-filter-form (filterChange)="onFilterChange($event)"></app-filter-form>
+    </div>
+  }
+</header>

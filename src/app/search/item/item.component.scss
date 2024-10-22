@@ -1,0 +1,22 @@
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mat-title-medium,
+.mat-label-medium,
+.mat-label-large {
+  margin: 0;
+}
+
+.mat-label-medium {
+  color: var(--mdc-filled-text-field-disabled-label-text-color);
+}
+
+.mat-mdc-card-outlined {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
