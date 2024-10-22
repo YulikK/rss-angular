@@ -2,7 +2,8 @@
   "root": true,
   "env": {
     "es6": true,
-    "jasmine": true
+    "jasmine": true,
+    "browser": true
   },
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -36,7 +37,8 @@
             "js": "never",
             "jsx": "never"
           }
-        ]
+        ],
+        "class-methods-use-this": "off"
       },
       "settings": {
         "import/resolver": {
