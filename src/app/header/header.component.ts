@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { LogoComponent } from './logo/logo.component';
 import { SearchFormComponent } from './search-form/search-form.component';
@@ -37,7 +37,13 @@ import { FilterFormComponent } from './filter-form/filter-form.component';
 export class HeaderComponent {
   isSettingsShow = false;
 
+  @Output() sortChange = new EventEmitter<string | null>();
+
   toggleSettingsShow(isSettingsShow: boolean) {
     this.isSettingsShow = isSettingsShow;
+  }
+
+  onSortChange(sortOption: string | null) {
+    this.sortChange.emit(sortOption);
   }
 }

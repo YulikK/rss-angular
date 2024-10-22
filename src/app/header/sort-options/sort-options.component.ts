@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 
 @Component({
@@ -6,15 +6,18 @@ import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
   standalone: true,
   imports: [MatChipsModule],
   templateUrl: './sort-options.component.html',
-  styleUrl: './sort-options.component.scss',
+  styleUrls: ['./sort-options.component.scss'],
 })
 export class SortOptionsComponent {
   readonly sortOptions: string[] = ['New', 'Popular', 'Old'];
 
   currentSortOption: string | null = null;
 
+  @Output() sortChange = new EventEmitter<string | null>();
+
   onSelectionChange(event: MatChipListboxChange) {
     this.currentSortOption = event.value;
+    this.sortChange.emit(this.currentSortOption);
     console.log(`Sorting by ${this.currentSortOption} order`);
   }
 }
