@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { SearchService } from '@/app/youtube/services/search.service';
+import { Component } from '@angular/core';
 import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 
 @Component({
@@ -13,10 +14,14 @@ export class SortOptionsComponent {
 
   currentSortOption: string | null = null;
 
-  @Output() sortChange = new EventEmitter<string | null>();
+  private searchService: SearchService;
+
+  constructor(searchService: SearchService) {
+    this.searchService = searchService;
+  }
 
   onSelectionChange(event: MatChipListboxChange) {
     this.currentSortOption = event.value;
-    this.sortChange.emit(this.currentSortOption);
+    this.searchService.sortMovies(this.currentSortOption);
   }
 }

@@ -1,4 +1,4 @@
-import { NumberFormatPipe } from '@/app/utils/number-format.pipe';
+import { NumberFormatPipe } from '@/app/shared/utils/number-format.pipe';
 import { YouTubeVideo } from '@/shared/types';
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
@@ -6,16 +6,16 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-item',
+  selector: 'app-search-item',
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonToggleModule, NumberFormatPipe],
-  templateUrl: './item.component.html',
-  styleUrl: './item.component.scss',
+  templateUrl: './search-item.component.html',
+  styleUrl: './search-item.component.scss',
 })
-export class ItemComponent implements OnInit {
+export class SearchItemComponent implements OnInit {
   screenWidth: number = 0;
 
-  @Input() result!: YouTubeVideo;
+  @Input() movie!: YouTubeVideo;
 
   ngOnInit() {
     this.screenWidth = window.innerWidth;
@@ -29,21 +29,21 @@ export class ItemComponent implements OnInit {
   }
 
   getThumbnailUrl(): string {
-    let { url } = this.result.snippet.thumbnails.default;
+    let { url } = this.movie.snippet.thumbnails.default;
     if (this.screenWidth >= 1280) {
-      url = this.result.snippet.thumbnails.maxres?.url ?? url;
+      url = this.movie.snippet.thumbnails.maxres?.url ?? url;
     }
     if (this.screenWidth >= 960) {
-      url = this.result.snippet.thumbnails.high.url;
+      url = this.movie.snippet.thumbnails.high.url;
     }
     if (this.screenWidth >= 600) {
-      url = this.result.snippet.thumbnails.standard?.url ?? url;
+      url = this.movie.snippet.thumbnails.standard?.url ?? url;
     }
     return url;
   }
 
   getFreshColor(): string {
-    const publishedDate = new Date(this.result.snippet.publishedAt);
+    const publishedDate = new Date(this.movie.snippet.publishedAt);
     const currentDate = new Date();
     const diffInDays = Math.floor((currentDate.getTime() - publishedDate.getTime()) / (1000 * 60 * 60 * 24));
 

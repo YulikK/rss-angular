@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { LogoComponent } from './logo/logo.component';
-import { SearchFormComponent } from './search-form/search-form.component';
-import { SettingsComponent } from './settings/settings.component';
-import { SortOptionsComponent } from './sort-options/sort-options.component';
-import { FilterFormComponent } from './filter-form/filter-form.component';
+import { LogoComponent } from '../logo/logo.component';
+import { SearchFormComponent } from '../../../youtube/components/search-form/search-form.component';
+import { SettingsComponent } from '../settings/settings.component';
+import { SortOptionsComponent } from '../sort-options/sort-options.component';
+import { FilterFormComponent } from '../filter-form/filter-form.component';
 
 @Component({
   selector: 'app-header',
@@ -37,19 +37,7 @@ import { FilterFormComponent } from './filter-form/filter-form.component';
 export class HeaderComponent {
   isSettingsShow = false;
 
-  @Output() sortChange = new EventEmitter<string | null>();
-
-  @Output() filterChange = new EventEmitter<string>();
-
   toggleSettingsShow(isSettingsShow: boolean) {
     this.isSettingsShow = isSettingsShow;
-  }
-
-  onFilterChange(filterText: string) {
-    this.filterChange.emit(filterText);
-  }
-
-  onSortChange(sortOption: string | null) {
-    this.sortChange.emit(sortOption);
   }
 }
