@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { FreshColorDirective } from '../../directives/fresh-color.directive';
 
 @Component({
   selector: 'app-search-item',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonToggleModule, NumberFormatPipe],
+  imports: [CommonModule, MatCardModule, MatButtonToggleModule, NumberFormatPipe, FreshColorDirective],
+  providers: [FreshColorDirective],
   templateUrl: './search-item.component.html',
   styleUrl: './search-item.component.scss',
 })
@@ -40,22 +42,5 @@ export class SearchItemComponent implements OnInit {
       url = this.movie.snippet.thumbnails.standard?.url ?? url;
     }
     return url;
-  }
-
-  getFreshColor(): string {
-    const publishedDate = new Date(this.movie.snippet.publishedAt);
-    const currentDate = new Date();
-    const diffInDays = Math.floor((currentDate.getTime() - publishedDate.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (diffInDays > 180) {
-      return 'border-b-red-500';
-    }
-    if (diffInDays > 30) {
-      return 'border-b-yellow-500';
-    }
-    if (diffInDays > 7) {
-      return 'border-b-green-500';
-    }
-    return 'border-b-blue-500';
   }
 }
