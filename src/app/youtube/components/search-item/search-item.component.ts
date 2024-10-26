@@ -1,10 +1,10 @@
-import { NumberFormatPipe } from '@/app/shared/utils/number-format.pipe';
 import { YouTubeVideo } from '@/shared/types';
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { FreshColorDirective } from '../../directives/fresh-color.directive';
+import { NumberFormatPipe } from '../../pipes/number-format/number-format.pipe';
 
 @Component({
   selector: 'app-search-item',
