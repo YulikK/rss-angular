@@ -2,7 +2,11 @@
   <mat-card appearance="outlined" class="h-full border-ye">
     <mat-card-content>
       <div class="flex flex-col gap-2">
-        <img class="border-r-2 rounded-lg" [src]="getThumbnailUrl()" [alt]="movie.snippet.title" />
+        <img
+          class="border-r-2 rounded-lg"
+          [src]="movie | thumbnailSrc: (screenWidth$ | async)"
+          [alt]="movie.snippet.title"
+        />
         <h6 class="mat-title-medium">{{ movie.snippet.title }}</h6>
         <div class="flex flex-col gap-4">
           <div class="flex justify-between items-center">
