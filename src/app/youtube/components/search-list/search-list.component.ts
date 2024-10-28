@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { YouTubeVideo } from '@/shared/types';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,7 @@ import { SearchService } from '../../services/search.service';
   imports: [CommonModule, SearchItemComponent],
   templateUrl: './search-list.component.html',
   styleUrl: './search-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchListComponent {
   movies$: Observable<YouTubeVideo[]>;

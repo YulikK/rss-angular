@@ -1,6 +1,6 @@
 import { YouTubeVideo } from '@/shared/types';
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { FreshColorDirective } from '../../directives/fresh-color.directive';
@@ -13,6 +13,7 @@ import { NumberFormatPipe } from '../../pipes/number-format/number-format.pipe';
   providers: [FreshColorDirective],
   templateUrl: './search-item.component.html',
   styleUrl: './search-item.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchItemComponent implements OnInit {
   screenWidth: number = 0;

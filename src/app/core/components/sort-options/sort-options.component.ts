@@ -1,5 +1,5 @@
 import { SearchService } from '@/app/youtube/services/search.service';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 
 @Component({
@@ -8,6 +8,7 @@ import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
   imports: [MatChipsModule],
   templateUrl: './sort-options.component.html',
   styleUrls: ['./sort-options.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SortOptionsComponent {
   readonly sortOptions: string[] = ['New', 'Popular', 'Old'];

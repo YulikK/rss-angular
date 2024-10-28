@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { LogoComponent } from '../logo/logo.component';
 import { SearchFormComponent } from '../../../youtube/components/search-form/search-form.component';
@@ -12,6 +12,7 @@ import { FilterFormComponent } from '../filter-form/filter-form.component';
   imports: [LogoComponent, SearchFormComponent, SettingsComponent, SortOptionsComponent, FilterFormComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('toggleSettingsShow', [
       state(
