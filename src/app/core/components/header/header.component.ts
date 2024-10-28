@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { LogoComponent } from '../logo/logo.component';
 import { SearchFormComponent } from '../../../youtube/components/search-form/search-form.component';
 import { SettingsComponent } from '../settings/settings.component';
 import { SortOptionsComponent } from '../sort-options/sort-options.component';
@@ -9,7 +8,7 @@ import { FilterFormComponent } from '../filter-form/filter-form.component';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [LogoComponent, SearchFormComponent, SettingsComponent, SortOptionsComponent, FilterFormComponent],
+  imports: [SearchFormComponent, SettingsComponent, SortOptionsComponent, FilterFormComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,6 +1,9 @@
 <header class="flex flex-col p-2 gap-2">
   <div class="flex justify-between items-center h-auto w-full">
-    <app-logo></app-logo>
+    <div class="w-[60px]">
+      <img src="img/logo.svg" alt="Youtube-app logo" aria-hidden="false" aria-label="Youtube-app icon" />
+    </div>
+
     <app-search-form></app-search-form>
     <app-settings (toggleSettingsShowEvent)="toggleSettingsShow($event)"></app-settings>
   </div>
