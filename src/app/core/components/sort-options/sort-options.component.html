@@ -2,7 +2,7 @@
   hideSingleSelectionIndicator
   class="w-full"
   aria-label="Sorted by"
-  (change)="onSelectionChange($event)"
+  (change)="onSelectionChange($event.value)"
 >
   @for (item of sortOptions; track item) {
     <mat-chip-option [value]="item" [selected]="item === currentSortOption" [highlighted]="item === currentSortOption"

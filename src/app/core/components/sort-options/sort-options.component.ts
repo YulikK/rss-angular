@@ -1,6 +1,5 @@
-import { SearchService } from '@/app/youtube/services/search.service';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-sort-options',
@@ -11,18 +10,14 @@ import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SortOptionsComponent {
-  readonly sortOptions: string[] = ['New', 'Popular', 'Old'];
+  @Input() sortOptions: string[] = [];
+
+  @Output() sortChange = new EventEmitter<string>();
 
   currentSortOption: string | null = null;
 
-  private searchService: SearchService;
-
-  constructor(searchService: SearchService) {
-    this.searchService = searchService;
-  }
-
-  onSelectionChange(event: MatChipListboxChange) {
-    this.currentSortOption = event.value;
-    this.searchService.sortMovies(this.currentSortOption);
+  onSelectionChange(value: string) {
+    this.currentSortOption = value;
+    this.sortChange.emit(this.currentSortOption);
   }
 }

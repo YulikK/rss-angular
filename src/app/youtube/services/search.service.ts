@@ -7,6 +7,8 @@ import * as mockData from './mock/response.json';
   providedIn: 'root',
 })
 export class SearchService {
+  readonly sortOptions: string[] = ['New', 'Popular', 'Old'];
+
   private originalMovies: YouTubeVideo[] = [];
 
   private moviesSubject: BehaviorSubject<YouTubeVideo[]> = new BehaviorSubject<YouTubeVideo[]>([]);
@@ -18,6 +20,10 @@ export class SearchService {
 
   getMovies(): Observable<YouTubeVideo[]> {
     return this.moviesSubject.asObservable();
+  }
+
+  getSortOptions(): string[] {
+    return this.sortOptions;
   }
 
   filterMovies(filterText: string) {
