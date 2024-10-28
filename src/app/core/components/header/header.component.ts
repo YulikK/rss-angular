@@ -51,6 +51,10 @@ export class HeaderComponent {
     this.searchService.sortMovies(value);
   }
 
+  onFilterChange(value: string) {
+    this.searchService.filterMovies(value);
+  }
+
   toggleSettingsShow(isSettingsShow: boolean) {
     this.isSettingsShow = isSettingsShow;
   }

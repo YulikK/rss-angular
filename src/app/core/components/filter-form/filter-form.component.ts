@@ -1,5 +1,4 @@
-import { SearchService } from '@/app/youtube/services/search.service';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 
@@ -14,13 +13,9 @@ import { MatInputModule } from '@angular/material/input';
 export class FilterFormComponent {
   filterText: string = '';
 
-  private searchService: SearchService;
-
-  constructor(searchService: SearchService) {
-    this.searchService = searchService;
-  }
+  @Output() filterChange = new EventEmitter<string>();
 
   onSubmit() {
-    this.searchService.filterMovies(this.filterText);
+    this.filterChange.emit(this.filterText);
   }
 }
