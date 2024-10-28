@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 
 @Component({
@@ -7,5 +7,6 @@ import { MatButton } from '@angular/material/button';
   imports: [MatButton],
   templateUrl: './not-found.component.html',
   styleUrl: './not-found.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotFoundComponent {}

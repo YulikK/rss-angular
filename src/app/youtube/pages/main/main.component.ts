@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SearchListComponent } from '../../components/search-list/search-list.component';
 
 @Component({
@@ -7,5 +7,6 @@ import { SearchListComponent } from '../../components/search-list/search-list.co
   imports: [SearchListComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainComponent {}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [MatInputModule, MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule],
   templateUrl: './search-form.component.html',
   styleUrl: './search-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchFormComponent {
   searchText: string = '';
