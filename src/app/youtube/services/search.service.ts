@@ -13,6 +13,10 @@ export class SearchService {
 
   private moviesSubject: BehaviorSubject<YouTubeVideo[]> = new BehaviorSubject<YouTubeVideo[]>([]);
 
+  private filterTextSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+
+  private sortTypeSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+
   constructor() {
     this.originalMovies = (mockData as YouTubeVideoListResponse).items;
     this.moviesSubject.next(this.originalMovies);
@@ -26,26 +30,19 @@ export class SearchService {
     return this.sortOptions;
   }
 
-  filterMovies(filterText: string) {
-    const filteredMovies = this.originalMovies.filter((movie) =>
-      movie.snippet.title.toLowerCase().includes(filterText.toLowerCase()),
-    );
-    this.moviesSubject.next(filteredMovies);
+  getFilterText(): Observable<string> {
+    return this.filterTextSubject.asObservable();
   }
 
-  sortMovies(sortType: string | null) {
-    const sortedMovies = [...this.originalMovies];
-    if (sortType === 'New') {
-      sortedMovies.sort(
-        (a, b) => new Date(b.snippet.publishedAt).getTime() - new Date(a.snippet.publishedAt).getTime(),
-      );
-    } else if (sortType === 'Popular') {
-      sortedMovies.sort((a, b) => parseInt(b.statistics.viewCount, 10) - parseInt(a.statistics.viewCount, 10));
-    } else if (sortType === 'Old') {
-      sortedMovies.sort(
-        (a, b) => new Date(a.snippet.publishedAt).getTime() - new Date(b.snippet.publishedAt).getTime(),
-      );
-    }
-    this.moviesSubject.next(sortedMovies);
+  setFilterText(filterText: string) {
+    this.filterTextSubject.next(filterText);
+  }
+
+  getSortType(): Observable<string | null> {
+    return this.sortTypeSubject.asObservable();
+  }
+
+  setSortType(sortType: string | null) {
+    this.sortTypeSubject.next(sortType);
   }
 }

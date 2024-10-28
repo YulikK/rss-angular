@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SearchService } from '@/app/youtube/services/search.service';
-import { SearchFormComponent } from '../../../youtube/components/search-form/search-form.component';
+import { SearchFormComponent } from '@/app/youtube/components/search-form/search-form.component';
+import { SortOptionsComponent } from '@/app/youtube/components/sort-options/sort-options.component';
+import { FilterFormComponent } from '@/app/youtube/components/filter-form/filter-form.component';
 import { SettingsComponent } from '../settings/settings.component';
-import { SortOptionsComponent } from '../sort-options/sort-options.component';
-import { FilterFormComponent } from '../filter-form/filter-form.component';
 
 @Component({
   selector: 'app-header',
@@ -48,11 +48,11 @@ export class HeaderComponent {
   }
 
   onSortChange(value: string) {
-    this.searchService.sortMovies(value);
+    this.searchService.setSortType(value);
   }
 
   onFilterChange(value: string) {
-    this.searchService.filterMovies(value);
+    this.searchService.setFilterText(value);
   }
 
   toggleSettingsShow(isSettingsShow: boolean) {

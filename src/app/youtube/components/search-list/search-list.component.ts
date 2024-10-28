@@ -4,11 +4,13 @@ import { YouTubeVideo } from '@/shared/types';
 import { CommonModule } from '@angular/common';
 import { SearchItemComponent } from '../search-item/search-item.component';
 import { SearchService } from '../../services/search.service';
+import { FilterPipe } from '../../pipes/filter/filter.pipe';
+import { SortPipe } from '../../pipes/sort/sort.pipe';
 
 @Component({
   selector: 'app-search-list',
   standalone: true,
-  imports: [CommonModule, SearchItemComponent],
+  imports: [CommonModule, SearchItemComponent, FilterPipe, SortPipe],
   templateUrl: './search-list.component.html',
   styleUrl: './search-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +18,13 @@ import { SearchService } from '../../services/search.service';
 export class SearchListComponent {
   movies$: Observable<YouTubeVideo[]>;
 
+  filterText$: Observable<string>;
+
+  sortType$: Observable<string | null>;
+
   constructor(private searchService: SearchService) {
     this.movies$ = searchService.getMovies();
+    this.filterText$ = searchService.getFilterText();
+    this.sortType$ = searchService.getSortType();
   }
 }
