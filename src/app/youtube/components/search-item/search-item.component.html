@@ -1,4 +1,7 @@
-<article [ngClass]="['border-b-8', 'rounded-lg', 'h-full']" [appFreshColor]="movie">
+<article
+  class="border-b-8 rounded-lg h-full transition-shadow duration-300 ease-in-out hover:shadow-lg"
+  [appFreshColor]="movie"
+>
   <mat-card appearance="outlined" class="h-full border-ye">
     <mat-card-content>
       <div class="flex flex-col gap-2">
@@ -17,14 +20,19 @@
                 <p class="mat-label-medium">{{ movie.statistics.viewCount | numberFormat }} views</p>
               </div>
             </div>
-            <mat-button-toggle-group name="feedback" aria-label="Feedback" hideSingleSelectionIndicator>
-              <mat-button-toggle value="like">
+            <mat-button-toggle-group
+              [value]="feedback"
+              name="feedback"
+              aria-label="Feedback"
+              hideSingleSelectionIndicator
+            >
+              <mat-button-toggle value="like" (click)="onFeedbackClick('like')">
                 <div class="flex justify-center items-center gap-2">
                   <img src="img/like.png" alt="Like" class="w-[24px]" />
                   {{ movie.statistics.likeCount | numberFormat }}
                 </div>
               </mat-button-toggle>
-              <mat-button-toggle value="dislike">
+              <mat-button-toggle value="dislike" (click)="onFeedbackClick('dislike')">
                 <div class="flex justify-center items-center gap-2">
                   {{ movie.statistics.dislikeCount | numberFormat }}
                   <img src="img/dislike.png" alt="Dislike" class="w-[24px] transform scale-x-[-1]" />
@@ -40,7 +48,10 @@
               }
             </p>
           </div>
-          <p class="description">{{ movie.snippet.description }}</p>
+          <p [ngClass]="!isDetailPage ? 'description' : ''">{{ movie.snippet.description }}</p>
+          @if (!isDetailPage) {
+            <a [routerLink]="['/details', movie.id]" class="flex justify-end"> <button mat-button>more...</button></a>
+          }
         </div>
       </div>
     </mat-card-content>

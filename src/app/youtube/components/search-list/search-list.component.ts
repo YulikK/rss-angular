@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { YouTubeVideo } from '@/shared/types';
+import { FeedbackType, YouTubeVideo } from '@/shared/types';
 import { CommonModule } from '@angular/common';
 import { SearchItemComponent } from '../search-item/search-item.component';
 import { SearchService } from '../../services/search.service';
@@ -26,5 +26,9 @@ export class SearchListComponent {
     this.movies$ = searchService.getMovies();
     this.filterText$ = searchService.getFilterText();
     this.sortType$ = searchService.getSortType();
+  }
+
+  onUpdateFeedback(event: { movie: YouTubeVideo; feedback: FeedbackType }) {
+    this.searchService.updateFeedback(event.movie, event.feedback);
   }
 }

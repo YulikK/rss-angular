@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { YouTubeVideo, YouTubeVideoListResponse } from '@/shared/types';
+import { FeedbackType, YouTubeVideo, YouTubeVideoListResponse } from '@/shared/types';
 import * as mockData from './mock/response.json';
 
 @Injectable({
@@ -11,6 +11,8 @@ export class SearchService {
 
   private originalMovies: YouTubeVideo[] = [];
 
+  private movieList: YouTubeVideo[] = [];
+
   private moviesSubject: BehaviorSubject<YouTubeVideo[]> = new BehaviorSubject<YouTubeVideo[]>([]);
 
   private filterTextSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
@@ -19,11 +21,16 @@ export class SearchService {
 
   constructor() {
     this.originalMovies = (mockData as YouTubeVideoListResponse).items;
-    this.moviesSubject.next(this.originalMovies);
+    this.movieList = JSON.parse(JSON.stringify(this.originalMovies));
+    this.moviesSubject.next(this.movieList);
   }
 
   getMovies(): Observable<YouTubeVideo[]> {
     return this.moviesSubject.asObservable();
+  }
+
+  getMovieById(id: string | null): YouTubeVideo | null {
+    return this.movieList.find((movie) => movie.id === id) || null;
   }
 
   getSortOptions(): string[] {
@@ -44,5 +51,20 @@ export class SearchService {
 
   setSortType(sortType: string | null) {
     this.sortTypeSubject.next(sortType);
+  }
+
+  updateFeedback(movie: YouTubeVideo, feedback: FeedbackType) {
+    const initialData = this.originalMovies.find((item) => item.id === movie.id);
+    const currentData = this.movieList.find((item) => item.id === movie.id);
+    if (initialData && currentData) {
+      currentData.statistics.likeCount =
+        feedback === 'like' ? String(Number(initialData.statistics.likeCount) + 1) : initialData.statistics.likeCount;
+      currentData.statistics.dislikeCount =
+        feedback === 'dislike'
+          ? String(Number(initialData.statistics.dislikeCount) + 1)
+          : initialData.statistics.dislikeCount;
+      currentData.statistics.feedback = feedback;
+    }
+    this.moviesSubject.next(this.movieList);
   }
 }
