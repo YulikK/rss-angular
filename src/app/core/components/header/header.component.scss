@@ -1,4 +1,8 @@
-header {
+.header {
   background-color: var(--mat-toolbar-container-background-color);
   color: var(--mat-toolbar-container-text-color);
+}
+
+.on {
+  background-color: var(--mat-standard-button-toggle-selected-state-background-color);
 }

@@ -4,12 +4,15 @@ import { SearchService } from '@/app/youtube/services/search.service';
 import { SearchFormComponent } from '@/app/youtube/components/search-form/search-form.component';
 import { SortOptionsComponent } from '@/app/youtube/components/sort-options/sort-options.component';
 import { FilterFormComponent } from '@/app/youtube/components/filter-form/filter-form.component';
-import { SettingsComponent } from '../settings/settings.component';
+import { MatButtonModule } from '@angular/material/button';
+import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [SearchFormComponent, SettingsComponent, SortOptionsComponent, FilterFormComponent],
+  imports: [CommonModule, SearchFormComponent, SortOptionsComponent, FilterFormComponent, MatButtonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,13 +41,25 @@ import { SettingsComponent } from '../settings/settings.component';
 export class HeaderComponent {
   private searchService: SearchService;
 
+  private authService: AuthService;
+
   isSettingsShow = false;
+
+  isLoggedIn$!: Observable<boolean>;
 
   sortOptions: string[];
 
-  constructor(searchService: SearchService) {
+  currentSortType$: Observable<string | null>;
+
+  filterText$: Observable<string>;
+
+  constructor(searchService: SearchService, authService: AuthService) {
     this.searchService = searchService;
+    this.authService = authService;
     this.sortOptions = this.searchService.getSortOptions();
+    this.isLoggedIn$ = this.authService.getIsLoggedIn();
+    this.currentSortType$ = this.searchService.getSortType();
+    this.filterText$ = this.searchService.getFilterText();
   }
 
   onSortChange(value: string) {
@@ -55,7 +70,11 @@ export class HeaderComponent {
     this.searchService.setFilterText(value);
   }
 
-  toggleSettingsShow(isSettingsShow: boolean) {
-    this.isSettingsShow = isSettingsShow;
+  toggleSettingsShow() {
+    this.isSettingsShow = !this.isSettingsShow;
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

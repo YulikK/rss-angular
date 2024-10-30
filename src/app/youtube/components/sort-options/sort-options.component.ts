@@ -12,12 +12,12 @@ import { MatChipsModule } from '@angular/material/chips';
 export class SortOptionsComponent {
   @Input() sortOptions: string[] = [];
 
+  @Input() currentSortType: string | null = null;
+
   @Output() sortChange = new EventEmitter<string>();
 
-  currentSortOption: string | null = null;
-
   onSelectionChange(value: string) {
-    this.currentSortOption = value;
-    this.sortChange.emit(this.currentSortOption);
+    this.currentSortType = value;
+    this.sortChange.emit(this.currentSortType);
   }
 }

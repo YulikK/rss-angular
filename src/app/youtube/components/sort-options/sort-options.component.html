@@ -5,7 +5,7 @@
   (change)="onSelectionChange($event.value)"
 >
   @for (item of sortOptions; track item) {
-    <mat-chip-option [value]="item" [selected]="item === currentSortOption" [highlighted]="item === currentSortOption"
+    <mat-chip-option [value]="item" [selected]="item === currentSortType" [highlighted]="item === currentSortType"
       >{{ item }}
     </mat-chip-option>
   }
