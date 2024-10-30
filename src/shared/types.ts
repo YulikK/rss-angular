@@ -36,12 +36,16 @@ export interface Snippet {
   defaultAudioLanguage: string;
 }
 
+export type FeedbackType = 'like' | 'dislike' | null;
+export type FeedbackActionType = 'like' | 'dislike';
+
 export interface Statistics {
   viewCount: string;
   likeCount: string;
   dislikeCount: string;
   favoriteCount: string;
   commentCount: string;
+  feedback?: FeedbackType;
 }
 
 export interface YouTubeVideo {
@@ -57,4 +61,9 @@ export interface YouTubeVideoListResponse {
   etag: string;
   pageInfo: PageInfo;
   items: YouTubeVideo[];
+}
+
+export interface Feedback {
+  movie: YouTubeVideo;
+  feedback: FeedbackType;
 }

@@ -1,0 +1,7 @@
+<main class="px-10 py-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  @for (movie of movies$ | async | sort: (sortType$ | async) | filter: (filterText$ | async); track movie.id) {
+    <app-search-item [movie]="movie" (updateFeedback)="onUpdateFeedback($event)"></app-search-item>
+  } @empty {
+    <p class="text-center">No results found</p>
+  }
+</main>

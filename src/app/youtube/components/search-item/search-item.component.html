@@ -1,0 +1,59 @@
+<article
+  class="border-b-8 rounded-lg h-full transition-shadow duration-300 ease-in-out hover:shadow-lg"
+  [appFreshColor]="movie"
+>
+  <mat-card appearance="outlined" class="h-full border-ye">
+    <mat-card-content>
+      <div class="flex flex-col gap-2">
+        <img
+          class="border-r-2 rounded-lg"
+          [src]="movie | thumbnailSrc: (screenWidth$ | async)"
+          [alt]="movie.snippet.title"
+        />
+        <h6 class="mat-title-medium">{{ movie.snippet.title }}</h6>
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <img src="img/user.png" alt="Like" class="w-[50px]" />
+              <div class="flex flex-col gap-1">
+                <p class="mat-title-medium">{{ movie.snippet.channelTitle }}</p>
+                <p class="mat-label-medium">{{ movie.statistics.viewCount | numberFormat }} views</p>
+              </div>
+            </div>
+            <mat-button-toggle-group
+              [value]="feedback"
+              name="feedback"
+              aria-label="Feedback"
+              hideSingleSelectionIndicator
+            >
+              <mat-button-toggle value="like" (click)="onFeedbackClick('like')">
+                <div class="flex justify-center items-center gap-2">
+                  <img src="img/like.png" alt="Like" class="w-[24px]" />
+                  {{ movie.statistics.likeCount | numberFormat }}
+                </div>
+              </mat-button-toggle>
+              <mat-button-toggle value="dislike" (click)="onFeedbackClick('dislike')">
+                <div class="flex justify-center items-center gap-2">
+                  {{ movie.statistics.dislikeCount | numberFormat }}
+                  <img src="img/dislike.png" alt="Dislike" class="w-[24px] transform scale-x-[-1]" />
+                </div>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <div class="flex items-center gap-1">
+            <p class="mat-label-large">
+              {{ movie.statistics.commentCount | numberFormat }} Comments
+              @for (tag of movie.snippet.tags.slice(0, 3); track tag) {
+                #{{ tag }}
+              }
+            </p>
+          </div>
+          <p [ngClass]="!isDetailPage ? 'description' : ''">{{ movie.snippet.description }}</p>
+          @if (!isDetailPage) {
+            <a [routerLink]="['/details', movie.id]" class="flex justify-end"> <button mat-button>more...</button></a>
+          }
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</article>

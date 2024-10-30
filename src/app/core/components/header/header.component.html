@@ -1,0 +1,34 @@
+<header class="header flex flex-col p-2 gap-2">
+  <div class="flex justify-between items-center h-auto w-full">
+    <div class="w-[60px]">
+      <img src="img/logo.svg" alt="Youtube-app logo" aria-hidden="false" aria-label="Youtube-app icon" />
+    </div>
+    @if (isLoggedIn$ | async) {
+      <app-search-form></app-search-form>
+    }
+    <div>
+      @if (isLoggedIn$ | async) {
+        <button mat-icon-button type="submit" (click)="toggleSettingsShow()" [class]="isSettingsShow ? 'on' : 'off'">
+          <img src="img/settings.svg" alt="settings icon" aria-hidden="false" aria-label="settings icon" />
+        </button>
+
+        <button mat-icon-button (click)="logout()">
+          <img src="img/logout.png" alt="logout" aria-hidden="false" aria-label="logout" />
+        </button>
+      }
+    </div>
+  </div>
+  @if (isSettingsShow && (isLoggedIn$ | async)) {
+    <div @toggleSettingsShow class="flex items-center gap-4">
+      <app-sort-options
+        (sortChange)="onSortChange($event)"
+        [sortOptions]="sortOptions"
+        [currentSortType]="currentSortType$ | async"
+      ></app-sort-options>
+      <app-filter-form
+        (filterChange)="onFilterChange($event)"
+        [filterText]="(filterText$ | async) ?? ''"
+      ></app-filter-form>
+    </div>
+  }
+</header>
