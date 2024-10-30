@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { LoggerService } from './logger/logger.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,16 +13,20 @@ export class AuthService {
 
   private router: Router;
 
+  private logger: LoggerService;
+
   constructor(router: Router) {
     this.router = router;
     const isLoggedIn = !!localStorage.getItem(this.tokenKey);
     this.isLoggedInSubject = new BehaviorSubject<boolean>(isLoggedIn);
+    this.logger = inject(LoggerService);
   }
 
   login(userName: string, password: string): void {
     const token = `jwt-mock-token-${userName}-${password}`;
     localStorage.setItem(this.tokenKey, token);
     this.isLoggedInSubject.next(true);
+    this.logger.logMessage('User logged in');
     this.router.navigate(['/']);
   }
 
