@@ -14,43 +14,54 @@
         <div class="flex flex-col gap-4">
           <div class="flex justify-between items-center">
             <div class="flex items-center gap-2">
-              <img src="img/user.png" alt="Like" class="w-[50px]" />
+              <img
+                mat-card-avatar
+                [src]="movie.channelInfo?.snippet?.thumbnails?.default?.url || 'img/user.png'"
+                alt="movie.channelInfo.snippet.title"
+                class="w-[50px]"
+              />
               <div class="flex flex-col gap-1">
                 <p class="mat-title-medium">{{ movie.snippet.channelTitle }}</p>
-                <p class="mat-label-medium">{{ movie.statistics.viewCount | numberFormat }} views</p>
+                <p class="mat-label-medium">{{ movie.statistics?.viewCount || '' | numberFormat }} views</p>
               </div>
             </div>
-            <mat-button-toggle-group
-              [value]="feedback"
-              name="feedback"
-              aria-label="Feedback"
-              hideSingleSelectionIndicator
-            >
-              <mat-button-toggle value="like" (click)="onFeedbackClick('like')">
-                <div class="flex justify-center items-center gap-2">
-                  <img src="img/like.png" alt="Like" class="w-[24px]" />
-                  {{ movie.statistics.likeCount | numberFormat }}
-                </div>
-              </mat-button-toggle>
-              <mat-button-toggle value="dislike" (click)="onFeedbackClick('dislike')">
-                <div class="flex justify-center items-center gap-2">
-                  {{ movie.statistics.dislikeCount | numberFormat }}
-                  <img src="img/dislike.png" alt="Dislike" class="w-[24px] transform scale-x-[-1]" />
-                </div>
-              </mat-button-toggle>
-            </mat-button-toggle-group>
+            @if (movie.statistics) {
+              <mat-button-toggle-group
+                [value]="feedback"
+                name="feedback"
+                aria-label="Feedback"
+                hideSingleSelectionIndicator
+              >
+                <mat-button-toggle value="like" (click)="onFeedbackClick('like')">
+                  <div class="flex justify-center items-center gap-2 p-1">
+                    <img src="img/like.png" alt="Like" class="w-[24px]" />
+                    <p class="mat-title-medium">{{ movie.statistics.likeCount | numberFormat }}</p>
+                  </div>
+                </mat-button-toggle>
+                <mat-button-toggle value="dislike" (click)="onFeedbackClick('dislike')">
+                  <div class="flex justify-center items-center gap-2 p-1">
+                    <p class="mat-title-medium">{{ movie.statistics.dislikeCount || '0' | numberFormat }}</p>
+                    <img src="img/dislike.png" alt="Dislike" class="w-[24px] transform scale-x-[-1]" />
+                  </div>
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            }
           </div>
           <div class="flex items-center gap-1">
             <p class="mat-label-large">
-              {{ movie.statistics.commentCount | numberFormat }} Comments
-              @for (tag of movie.snippet.tags.slice(0, 3); track tag) {
-                #{{ tag }}
+              {{ movie.statistics?.commentCount || '' | numberFormat }} Comments
+              @if (movie.snippet.tags?.length) {
+                @for (tag of movie.snippet.tags?.slice(0, 3); track tag) {
+                  #{{ tag }}
+                }
               }
             </p>
           </div>
           <p [ngClass]="!isDetailPage ? 'description' : ''">{{ movie.snippet.description }}</p>
           @if (!isDetailPage) {
-            <a [routerLink]="['/details', movie.id]" class="flex justify-end"> <button mat-button>more...</button></a>
+            <a [routerLink]="['/details', movie.id.videoId]" class="flex justify-end">
+              <button mat-button>more...</button></a
+            >
           }
         </div>
       </div>

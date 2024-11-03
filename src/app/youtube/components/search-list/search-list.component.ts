@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FeedbackType, YouTubeVideo } from '@/shared/types';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,7 @@ import { SortPipe } from '../../pipes/sort/sort.pipe';
   styleUrl: './search-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchListComponent {
+export class SearchListComponent implements OnInit {
   movies$: Observable<YouTubeVideo[]>;
 
   filterText$: Observable<string>;
@@ -26,6 +26,10 @@ export class SearchListComponent {
     this.movies$ = searchService.getMovies();
     this.filterText$ = searchService.getFilterText();
     this.sortType$ = searchService.getSortType();
+  }
+
+  ngOnInit(): void {
+    this.searchService.searchMovies('');
   }
 
   onUpdateFeedback(event: { movie: YouTubeVideo; feedback: FeedbackType }) {

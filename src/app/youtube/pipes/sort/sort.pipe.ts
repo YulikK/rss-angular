@@ -16,7 +16,12 @@ export class SortPipe implements PipeTransform {
         (a, b) => new Date(b.snippet.publishedAt).getTime() - new Date(a.snippet.publishedAt).getTime(),
       );
     } else if (sortType === 'Popular') {
-      sortedMovies.sort((a, b) => parseInt(b.statistics.viewCount, 10) - parseInt(a.statistics.viewCount, 10));
+      sortedMovies.sort((a, b) => {
+        if (!b.statistics || !a.statistics) {
+          return 0;
+        }
+        return parseInt(b.statistics.viewCount, 10) - parseInt(a.statistics.viewCount, 10);
+      });
     } else if (sortType === 'Old') {
       sortedMovies.sort(
         (a, b) => new Date(a.snippet.publishedAt).getTime() - new Date(b.snippet.publishedAt).getTime(),
