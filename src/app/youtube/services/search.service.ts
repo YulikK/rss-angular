@@ -1,14 +1,23 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, iif, map, Observable, of, switchMap } from 'rxjs';
 import {
   FeedbackType,
   YouTubeChannelResponse,
   YouTubeVideo,
-  YouTubeVideoDetailResponse,
+  YouTubeVideoDetailsResponse,
   YouTubeVideoListResponse,
 } from '@/shared/types';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
+const MAX_RESULTS = '3';
+const CHART = 'mostPopular';
+const PART_VIDEO = 'snippet';
+const PART_STATISTICS = 'statistics';
+const API_URL = {
+  search: 'search',
+  videos: 'videos',
+  channels: 'channels',
+};
 @Injectable({
   providedIn: 'root',
 })
@@ -33,10 +42,10 @@ export class SearchService {
     this.http = http;
   }
 
-  searchMovies(searchText: string): void {
-    this.searchVideos(searchText)
+  searchMovies(searchText?: string, id?: string): void {
+    this.searchVideos(searchText, id)
       .pipe(
-        switchMap((videos) => this.getVideoDetails(videos)),
+        switchMap((videos) => iif(() => !id, this.getVideoDetails(videos), of(videos))),
         switchMap((videosWithDetails) => this.getChannelInfo(videosWithDetails)),
       )
       .subscribe((movies) => {
@@ -46,39 +55,46 @@ export class SearchService {
       });
   }
 
-  private searchVideos(searchText: string): Observable<YouTubeVideo[]> {
-    const params = new HttpParams()
-      .set('type', 'video')
-      .set(searchText ? 'q' : 'chart', searchText || 'mostPopular')
-      .set('part', 'snippet')
-      .set('maxResults', '3');
+  private searchVideos(searchText?: string, id?: string): Observable<YouTubeVideo[]> {
+    let params = new HttpParams().set('type', 'video').set('part', PART_VIDEO).set('maxResults', MAX_RESULTS);
 
-    return this.http.get<YouTubeVideoListResponse>('search', { params }).pipe(map((response) => response.items));
+    if (id) {
+      params = params.set('id', id);
+    } else if (searchText) {
+      params = params.set('q', searchText);
+    } else {
+      params = params.set('chart', CHART);
+    }
+
+    return this.http.get<YouTubeVideoListResponse>(id ? API_URL.videos : API_URL.search, { params }).pipe(
+      map((response) =>
+        response.items.map((item) => ({
+          ...item,
+          id: typeof item.id === 'object' ? item.id.videoId : item.id,
+        })),
+      ),
+    );
   }
 
   private getVideoDetails(videos: YouTubeVideo[]): Observable<YouTubeVideo[]> {
-    const videoIds = videos.map((video) => video.id.videoId).join(',');
-    const params = new HttpParams().set('part', 'snippet,statistics').set('id', videoIds);
+    const videoIds = videos.map((video) => video.id).join(',');
+    const params = new HttpParams().set('part', `${PART_VIDEO},${PART_STATISTICS}`).set('id', videoIds);
 
-    return this.http.get<YouTubeVideoDetailResponse>('videos', { params }).pipe(
+    return this.http.get<YouTubeVideoDetailsResponse>(API_URL.videos, { params }).pipe(
       map((detailsResponse) =>
         detailsResponse.items.map((detail) => {
-          const video = videos.find((v) => v.id.videoId === detail.id);
+          const video = videos.find((v) => v.id === detail.id);
           if (video) {
             return {
               ...video,
               statistics: {
                 ...detail.statistics,
-                viewCount: detail.statistics.viewCount || '0',
               },
             };
           }
           return {
             ...detail,
-            id: {
-              kind: detail.kind,
-              videoId: detail.id,
-            },
+            id: detail.id,
           };
         }),
       ),
@@ -87,9 +103,9 @@ export class SearchService {
 
   private getChannelInfo(videos: YouTubeVideo[]): Observable<YouTubeVideo[]> {
     const channelIds = videos.map((video) => video.snippet.channelId).join(',');
-    const params = new HttpParams().set('part', 'snippet').set('id', channelIds);
+    const params = new HttpParams().set('part', PART_VIDEO).set('id', channelIds);
 
-    return this.http.get<YouTubeChannelResponse>('channels', { params }).pipe(
+    return this.http.get<YouTubeChannelResponse>(API_URL.channels, { params }).pipe(
       map((channelResponse) =>
         videos.map((video) => {
           const channel = channelResponse.items.find((c) => c.id === video.snippet.channelId);
@@ -104,7 +120,7 @@ export class SearchService {
   }
 
   getMovieById(id: string | null): YouTubeVideo | null {
-    return this.movieList.find((movie) => movie.id.videoId === id) || null;
+    return this.movieList.find((movie) => movie.id === id) || null;
   }
 
   getSortOptions(): string[] {

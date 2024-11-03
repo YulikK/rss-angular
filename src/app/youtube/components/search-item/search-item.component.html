@@ -59,9 +59,7 @@
           </div>
           <p [ngClass]="!isDetailPage ? 'description' : ''">{{ movie.snippet.description }}</p>
           @if (!isDetailPage) {
-            <a [routerLink]="['/details', movie.id.videoId]" class="flex justify-end">
-              <button mat-button>more...</button></a
-            >
+            <a [routerLink]="['/details', movie.id]" class="flex justify-end"> <button mat-button>more...</button></a>
           }
         </div>
       </div>

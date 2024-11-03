@@ -13,6 +13,9 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 
+const MIN_LENGTH = 3;
+const DEBOUNCE_TIME = 300;
+
 @Component({
   selector: 'app-search-form',
   standalone: true,
@@ -32,8 +35,8 @@ export class SearchFormComponent implements OnInit {
   ngOnInit(): void {
     this.searchControl.valueChanges
       .pipe(
-        filter((value): value is string => value !== null && value.length >= 3),
-        debounceTime(300),
+        filter((value): value is string => value !== null && value.length >= MIN_LENGTH),
+        debounceTime(DEBOUNCE_TIME),
         distinctUntilChanged(),
       )
       .subscribe((searchText) => {
