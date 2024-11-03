@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, iif, map, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, iif, map, Observable, of, switchMap, tap } from 'rxjs';
 import {
   FeedbackType,
   YouTubeChannelResponse,
@@ -38,19 +38,34 @@ export class SearchService {
 
   private http: HttpClient;
 
+  private isDataLoaded = false;
+
   constructor(http: HttpClient) {
     this.http = http;
   }
 
   searchMovies(searchText?: string, id?: string): void {
+    if (this.isDataLoaded && !searchText && !id) {
+      this.moviesSubject.next(this.movieList);
+      return;
+    }
+
+    if (id && this.movieList.some((movie) => movie.id === id)) {
+      this.moviesSubject.next(this.movieList);
+      return;
+    }
+
     this.searchVideos(searchText, id)
       .pipe(
         switchMap((videos) => iif(() => !id, this.getVideoDetails(videos), of(videos))),
         switchMap((videosWithDetails) => this.getChannelInfo(videosWithDetails)),
+        tap((movies) => {
+          this.originalMovies = movies;
+          this.movieList = JSON.parse(JSON.stringify(this.originalMovies));
+          this.isDataLoaded = true;
+        }),
       )
       .subscribe((movies) => {
-        this.originalMovies = movies;
-        this.movieList = JSON.parse(JSON.stringify(this.originalMovies));
         this.moviesSubject.next(this.movieList);
       });
   }
