@@ -105,3 +105,13 @@ export interface Feedback {
 export interface YouTubeChannelResponse {
   items: YouTubeChannel[];
 }
+
+export type PasswordStrenght = {
+  passwordStrenght: {
+    hasUpperCase: boolean;
+    hasLowerCase: boolean;
+    hasNumber: boolean;
+    hasSpecialCharacter: boolean;
+    hasMinimumLength: boolean;
+  };
+};

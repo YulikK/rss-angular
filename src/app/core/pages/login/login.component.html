@@ -1,11 +1,40 @@
 <div class="flex flex-col items-center justify-center p-10">
-  <form (ngSubmit)="onSubmit()" class="w-full max-w-sm flex flex-col justify-center items-center gap-2">
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="onSubmit()"
+    class="w-full max-w-sm flex flex-col justify-center items-center gap-2"
+  >
     <img src="img/user.png" alt="Like" class="w-[50px]" />
-    <mat-form-field appearance="outline" class="my-input">
-      <input matInput [(ngModel)]="userName" name="userName" placeholder="User" />
+    <mat-form-field appearance="outline" class="my-input" class="w-full">
+      <input matInput formControlName="email" name="email" placeholder="email" />
+      @if (loginForm.get('email')?.hasError('required')) {
+        <mat-error>Email is required</mat-error>
+      }
+      @if (loginForm.get('email')?.hasError('email')) {
+        <mat-error>The email is invalid</mat-error>
+      }
     </mat-form-field>
-    <mat-form-field appearance="outline" class="my-input">
-      <input matInput [(ngModel)]="password" name="password" type="password" placeholder="password" />
+    <mat-form-field appearance="outline" class="my-input" class="w-full">
+      <input matInput formControlName="password" name="password" type="password" placeholder="password" />
+      @if (loginForm.get('password')?.hasError('required')) {
+        <mat-error>Password is required</mat-error>
+      }
+      @if (loginForm.get('password')?.hasError('passwordStrenght')) {
+        <mat-hint>
+          @let errors = loginForm.get('password')?.errors?.['passwordStrenght'];
+          @if (!errors.hasUpperCase) {
+            At least one uppercase letter
+          } @else if (!errors.hasLowerCase) {
+            At least one lowercase letter
+          } @else if (!errors.hasNumber) {
+            At least one number
+          } @else if (!errors.hasSpecialCharacter) {
+            At least one special character
+          } @else if (!errors.hasMinimumLength) {
+            At least 8 characters
+          }
+        </mat-hint>
+      }
     </mat-form-field>
     <div class="flex items-center justify-between">
       <button
