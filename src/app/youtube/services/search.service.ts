@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, iif, map, Observable, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, iif, map, Observable, of, switchMap } from 'rxjs';
 import {
   FeedbackType,
   YouTubeChannelResponse,
@@ -59,13 +59,11 @@ export class SearchService {
       .pipe(
         switchMap((videos) => iif(() => !id, this.getVideoDetails(videos), of(videos))),
         switchMap((videosWithDetails) => this.getChannelInfo(videosWithDetails)),
-        tap((movies) => {
-          this.originalMovies = movies;
-          this.movieList = JSON.parse(JSON.stringify(this.originalMovies));
-          this.isDataLoaded = true;
-        }),
       )
       .subscribe((movies) => {
+        this.originalMovies = movies;
+        this.movieList = JSON.parse(JSON.stringify(this.originalMovies));
+        this.isDataLoaded = true;
         this.moviesSubject.next(this.movieList);
       });
   }
