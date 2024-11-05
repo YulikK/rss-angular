@@ -16,7 +16,7 @@
             <div class="flex items-center gap-2">
               <img
                 mat-card-avatar
-                [src]="movie.channelInfo?.snippet?.thumbnails?.default?.url || 'img/user.png'"
+                [src]="movie.channelInfo?.snippet?.thumbnails?.default?.url || 'assets/img/user.png'"
                 alt="movie.channelInfo.snippet.title"
                 class="w-[50px]"
               />
@@ -34,14 +34,14 @@
               >
                 <mat-button-toggle value="like" (click)="onFeedbackClick('like')">
                   <div class="flex justify-center items-center gap-2 p-1">
-                    <img src="img/like.png" alt="Like" class="w-[24px]" />
+                    <img src="assets/img/like.png" alt="Like" class="w-[24px]" />
                     <p class="mat-title-medium">{{ movie.statistics.likeCount | numberFormat }}</p>
                   </div>
                 </mat-button-toggle>
                 <mat-button-toggle value="dislike" (click)="onFeedbackClick('dislike')">
                   <div class="flex justify-center items-center gap-2 p-1">
                     <p class="mat-title-medium">{{ movie.statistics.dislikeCount || '0' | numberFormat }}</p>
-                    <img src="img/dislike.png" alt="Dislike" class="w-[24px] transform scale-x-[-1]" />
+                    <img src="assets/img/dislike.png" alt="Dislike" class="w-[24px] transform scale-x-[-1]" />
                   </div>
                 </mat-button-toggle>
               </mat-button-toggle-group>

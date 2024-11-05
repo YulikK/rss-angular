@@ -11,12 +11,9 @@ export class AuthService {
 
   private isLoggedInSubject: BehaviorSubject<boolean>;
 
-  private router: Router;
-
   private logger: LoggerService;
 
-  constructor(router: Router) {
-    this.router = router;
+  constructor(private router: Router) {
     const isLoggedIn = !!localStorage.getItem(this.tokenKey);
     this.isLoggedInSubject = new BehaviorSubject<boolean>(isLoggedIn);
     this.logger = inject(LoggerService);

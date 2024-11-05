@@ -16,14 +16,10 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
 
-  private authService: AuthService;
-
-  private formBuilder: FormBuilder;
-
-  constructor(authService: AuthService, formBuilder: FormBuilder) {
-    this.formBuilder = formBuilder;
-    this.authService = authService;
-  }
+  constructor(
+    private authService: AuthService,
+    private formBuilder: FormBuilder,
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({

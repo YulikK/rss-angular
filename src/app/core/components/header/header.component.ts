@@ -39,10 +39,6 @@ import { AuthService } from '../../services/auth.service';
   ],
 })
 export class HeaderComponent {
-  private searchService: SearchService;
-
-  private authService: AuthService;
-
   isSettingsShow = false;
 
   isLoggedIn$!: Observable<boolean>;
@@ -55,9 +51,10 @@ export class HeaderComponent {
 
   searchText$: Observable<string>;
 
-  constructor(searchService: SearchService, authService: AuthService) {
-    this.searchService = searchService;
-    this.authService = authService;
+  constructor(
+    private searchService: SearchService,
+    private authService: AuthService,
+  ) {
     this.sortOptions = this.searchService.getSortOptions();
     this.isLoggedIn$ = this.authService.getIsLoggedIn();
     this.currentSortType$ = this.searchService.getSortType();

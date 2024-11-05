@@ -9,10 +9,7 @@ import { map } from 'rxjs/operators';
 export class WindowSizeService {
   screenWidth$: Observable<number>;
 
-  private breakPointObserver: BreakpointObserver;
-
-  constructor(breakPointObserver: BreakpointObserver) {
-    this.breakPointObserver = breakPointObserver;
+  constructor(private breakPointObserver: BreakpointObserver) {
     this.screenWidth$ = this.breakPointObserver
       .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
       .pipe(

@@ -36,13 +36,9 @@ export class SearchService {
 
   private searchTextSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-  private http: HttpClient;
-
   private isDataLoaded = false;
 
-  constructor(http: HttpClient) {
-    this.http = http;
-  }
+  constructor(private http: HttpClient) {}
 
   searchMovies(searchText?: string, id?: string): void {
     if (this.isDataLoaded && !searchText && !id) {

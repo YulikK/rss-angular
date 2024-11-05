@@ -4,7 +4,7 @@
     (ngSubmit)="onSubmit()"
     class="w-full max-w-sm flex flex-col justify-center items-center gap-2"
   >
-    <img src="img/user.png" alt="Like" class="w-[50px]" />
+    <img src="assets/img/user.png" alt="Like" class="w-[50px]" />
     <mat-form-field appearance="outline" class="my-input" class="w-full">
       <input matInput formControlName="email" name="email" placeholder="email" />
       @if (loginForm.get('email')?.hasError('required')) {

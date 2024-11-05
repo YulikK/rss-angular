@@ -21,13 +21,10 @@ export class DetailsComponent implements OnInit {
 
   id: string | null = null;
 
-  private route: ActivatedRoute;
-
-  private searchService: SearchService;
-
-  constructor(route: ActivatedRoute, searchService: SearchService) {
-    this.route = route;
-    this.searchService = searchService;
+  constructor(
+    private route: ActivatedRoute,
+    private searchService: SearchService,
+  ) {
     this.movies$ = searchService.getMovies();
   }
 
