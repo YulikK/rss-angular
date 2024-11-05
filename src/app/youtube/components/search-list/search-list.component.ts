@@ -6,11 +6,12 @@ import { SearchItemComponent } from '../search-item/search-item.component';
 import { SearchService } from '../../services/search.service';
 import { FilterPipe } from '../../pipes/filter/filter.pipe';
 import { SortPipe } from '../../pipes/sort/sort.pipe';
+import { NoResultsComponent } from '../no-results/no-results.component';
 
 @Component({
   selector: 'app-search-list',
   standalone: true,
-  imports: [CommonModule, SearchItemComponent, FilterPipe, SortPipe],
+  imports: [CommonModule, SearchItemComponent, FilterPipe, SortPipe, NoResultsComponent],
   templateUrl: './search-list.component.html',
   styleUrl: './search-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

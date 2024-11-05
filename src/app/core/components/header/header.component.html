@@ -1,14 +1,31 @@
 <header class="header flex flex-col p-2 gap-2">
   <div class="flex justify-between items-center h-auto w-full">
     <div class="w-[60px]">
-      <img src="assets/img/logo.svg" alt="Youtube-app logo" aria-hidden="false" aria-label="Youtube-app icon" />
+      <a [routerLink]="homePage">
+        <img src="assets/img/logo.svg" alt="Youtube-app logo" aria-hidden="false" aria-label="Youtube-app icon" />
+      </a>
     </div>
-    @if (isLoggedIn$ | async) {
-      <div class="flex items-center gap-2">
-        <app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
-        <button mat-icon-button type="submit" (click)="toggleSettingsShow()" [class]="isSettingsShow ? 'on' : 'off'">
-          <img src="assets/img/settings.svg" alt="settings icon" aria-hidden="false" aria-label="settings icon" />
-        </button>
+    @if ((isLoggedIn$ | async) && (isHomeRoute$ | async)) {
+      <div class="flex flex-col justify-center items-center">
+        <div class="flex items-center gap-2">
+          <app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
+          <button mat-icon-button type="submit" (click)="toggleSettingsShow()" [class]="isSettingsShow ? 'on' : 'off'">
+            <img src="assets/img/settings.svg" alt="settings icon" aria-hidden="false" aria-label="settings icon" />
+          </button>
+        </div>
+        @if (isSettingsShow) {
+          <div @toggleSettingsShow class="flex items-center gap-4">
+            <app-sort-options
+              (sortChange)="onSortChange($event)"
+              [sortOptions]="sortOptions"
+              [currentSortType]="currentSortType$ | async"
+            ></app-sort-options>
+            <app-filter-form
+              (filterChange)="onFilterChange($event)"
+              [filterText]="(filterText$ | async) ?? ''"
+            ></app-filter-form>
+          </div>
+        }
       </div>
     }
     <div>
@@ -19,17 +36,4 @@
       }
     </div>
   </div>
-  @if (isSettingsShow && (isLoggedIn$ | async)) {
-    <div @toggleSettingsShow class="flex items-center gap-4">
-      <app-sort-options
-        (sortChange)="onSortChange($event)"
-        [sortOptions]="sortOptions"
-        [currentSortType]="currentSortType$ | async"
-      ></app-sort-options>
-      <app-filter-form
-        (filterChange)="onFilterChange($event)"
-        [filterText]="(filterText$ | async) ?? ''"
-      ></app-filter-form>
-    </div>
-  }
 </header>

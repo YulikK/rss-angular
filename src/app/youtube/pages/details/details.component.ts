@@ -7,11 +7,12 @@ import { CommonModule } from '@angular/common';
 import { SearchService } from '../../services/search.service';
 import { SearchItemComponent } from '../../components/search-item/search-item.component';
 import { FindByIdPipe } from '../../pipes/findById/find-by-id.pipe';
+import { NoResultsComponent } from '../../components/no-results/no-results.component';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, SearchItemComponent, RouterModule, MatButtonModule, FindByIdPipe],
+  imports: [CommonModule, SearchItemComponent, RouterModule, MatButtonModule, FindByIdPipe, NoResultsComponent],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
