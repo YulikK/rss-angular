@@ -36,8 +36,12 @@ export interface Snippet {
   defaultAudioLanguage: string;
 }
 
-export type FeedbackType = 'like' | 'dislike' | null;
-export type FeedbackActionType = 'like' | 'dislike';
+export enum FeedbackAction {
+  LIKE = 'like',
+  DISLIKE = 'dislike',
+}
+
+export type FeedbackType = FeedbackAction | null;
 
 export interface Statistics {
   viewCount: string;

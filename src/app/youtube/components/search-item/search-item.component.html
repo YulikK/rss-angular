@@ -32,13 +32,13 @@
                 aria-label="Feedback"
                 hideSingleSelectionIndicator
               >
-                <mat-button-toggle value="like" (click)="onFeedbackClick('like')">
+                <mat-button-toggle value="like" (click)="onFeedbackClick(feedbackAction.LIKE)">
                   <div class="flex justify-center items-center gap-2 p-1">
                     <img src="assets/img/like.png" alt="Like" class="w-[24px]" />
                     <p class="mat-title-medium">{{ movie.statistics.likeCount | numberFormat }}</p>
                   </div>
                 </mat-button-toggle>
-                <mat-button-toggle value="dislike" (click)="onFeedbackClick('dislike')">
+                <mat-button-toggle value="dislike" (click)="onFeedbackClick(feedbackAction.DISLIKE)">
                   <div class="flex justify-center items-center gap-2 p-1">
                     <p class="mat-title-medium">{{ movie.statistics.dislikeCount || '0' | numberFormat }}</p>
                     <img src="assets/img/dislike.png" alt="Dislike" class="w-[24px] transform scale-x-[-1]" />

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, iif, map, Observable, of, switchMap } from 'rxjs';
 import {
+  FeedbackAction,
   FeedbackType,
   YouTubeChannelResponse,
   YouTubeVideo,
@@ -166,7 +167,9 @@ export class SearchService {
     const currentData = this.movieList.find((item) => item.id === movie.id);
     if (initialData && currentData && initialData.statistics && currentData.statistics) {
       currentData.statistics.likeCount =
-        feedback === 'like' ? String(Number(initialData.statistics.likeCount) + 1) : initialData.statistics.likeCount;
+        feedback === FeedbackAction.LIKE
+          ? String(Number(initialData.statistics.likeCount) + 1)
+          : initialData.statistics.likeCount;
       currentData.statistics.feedback = feedback;
     }
     this.moviesSubject.next(this.movieList);

@@ -1,4 +1,4 @@
-import { Feedback, FeedbackActionType, FeedbackType, YouTubeVideo } from '@/shared/types';
+import { Feedback, FeedbackAction, FeedbackType, YouTubeVideo } from '@/shared/types';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -42,6 +42,8 @@ export class SearchItemComponent implements OnInit {
 
   feedback: FeedbackType = null;
 
+  readonly feedbackAction = FeedbackAction;
+
   constructor(windowSizeService: WindowSizeService) {
     this.screenWidth$ = windowSizeService.screenWidth$;
   }
@@ -50,7 +52,7 @@ export class SearchItemComponent implements OnInit {
     this.feedback = this.movie.statistics?.feedback || null;
   }
 
-  onFeedbackClick(action: FeedbackActionType) {
+  onFeedbackClick(action: FeedbackAction) {
     this.feedback = this.feedback === action ? null : action;
     this.updateFeedback.emit({ movie: this.movie, feedback: this.feedback });
   }
