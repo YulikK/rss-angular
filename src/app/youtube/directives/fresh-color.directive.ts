@@ -1,5 +1,5 @@
 import { YouTubeVideo } from '@/shared/types';
-import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 
 @Directive({
   selector: '[appFreshColor]',
@@ -8,21 +8,20 @@ import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
 export class FreshColorDirective implements AfterViewInit {
   @Input('appFreshColor') movie?: YouTubeVideo;
 
-  private element: ElementRef;
-
-  constructor(private el: ElementRef) {
-    this.element = el;
-  }
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+  ) {}
 
   ngAfterViewInit(): void {
-    this.setBorderColor(this.element);
+    this.setBorderColor();
   }
 
-  private setBorderColor(el: ElementRef) {
-    if (!el.nativeElement) {
+  private setBorderColor() {
+    if (!this.el.nativeElement) {
       return;
     }
-    let borderColor = 'border-b-blue-500';
+    let borderColor = '#449aef';
 
     if (this.movie) {
       const publishedDate = new Date(this.movie.snippet.publishedAt);
@@ -30,14 +29,14 @@ export class FreshColorDirective implements AfterViewInit {
       const diffInDays = Math.floor((currentDate.getTime() - publishedDate.getTime()) / (1000 * 60 * 60 * 24));
 
       if (diffInDays > 180) {
-        borderColor = 'border-b-red-500';
+        borderColor = '#ef4444';
       } else if (diffInDays > 30) {
-        borderColor = 'border-b-yellow-500';
+        borderColor = '#efdb44';
       } else if (diffInDays > 7) {
-        borderColor = 'border-b-green-500';
+        borderColor = '#22c55e';
       }
     }
 
-    el.nativeElement.classList.add(borderColor);
+    this.renderer.setStyle(this.el.nativeElement, 'borderBottomColor', borderColor);
   }
 }

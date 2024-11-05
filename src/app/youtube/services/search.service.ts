@@ -9,7 +9,7 @@ import {
 } from '@/shared/types';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-const MAX_RESULTS = '3';
+const MAX_RESULTS = '15';
 const CHART = 'mostPopular';
 const PART_VIDEO = 'snippet';
 const PART_STATISTICS = 'statistics';
