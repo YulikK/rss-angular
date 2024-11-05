@@ -1,8 +1,23 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { FeedbackType, YouTubeVideo, YouTubeVideoListResponse } from '@/shared/types';
-import * as mockData from './mock/response.json';
+import { BehaviorSubject, iif, map, Observable, of, switchMap } from 'rxjs';
+import {
+  FeedbackType,
+  YouTubeChannelResponse,
+  YouTubeVideo,
+  YouTubeVideoDetailsResponse,
+  YouTubeVideoListResponse,
+} from '@/shared/types';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
+const MAX_RESULTS = '12';
+const CHART = 'mostPopular';
+const PART_VIDEO = 'snippet';
+const PART_STATISTICS = 'statistics';
+const API_URL = {
+  search: 'search',
+  videos: 'videos',
+  channels: 'channels',
+};
 @Injectable({
   providedIn: 'root',
 })
@@ -19,10 +34,98 @@ export class SearchService {
 
   private sortTypeSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  constructor() {
-    this.originalMovies = (mockData as YouTubeVideoListResponse).items;
-    this.movieList = JSON.parse(JSON.stringify(this.originalMovies));
-    this.moviesSubject.next(this.movieList);
+  private searchTextSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+
+  private http: HttpClient;
+
+  private isDataLoaded = false;
+
+  constructor(http: HttpClient) {
+    this.http = http;
+  }
+
+  searchMovies(searchText?: string, id?: string): void {
+    if (this.isDataLoaded && !searchText && !id) {
+      this.moviesSubject.next(this.movieList);
+      return;
+    }
+
+    if (id && this.movieList.some((movie) => movie.id === id)) {
+      this.moviesSubject.next(this.movieList);
+      return;
+    }
+
+    this.searchVideos(searchText, id)
+      .pipe(
+        switchMap((videos) => iif(() => !id, this.getVideoDetails(videos), of(videos))),
+        switchMap((videosWithDetails) => this.getChannelInfo(videosWithDetails)),
+      )
+      .subscribe((movies) => {
+        this.originalMovies = movies;
+        this.movieList = JSON.parse(JSON.stringify(this.originalMovies));
+        this.isDataLoaded = true;
+        this.moviesSubject.next(this.movieList);
+      });
+  }
+
+  private searchVideos(searchText?: string, id?: string): Observable<YouTubeVideo[]> {
+    let params = new HttpParams().set('type', 'video').set('part', PART_VIDEO).set('maxResults', MAX_RESULTS);
+
+    if (id) {
+      params = params.set('id', id);
+    } else if (searchText) {
+      params = params.set('q', searchText);
+    } else {
+      params = params.set('chart', CHART);
+    }
+
+    return this.http.get<YouTubeVideoListResponse>(id ? API_URL.videos : API_URL.search, { params }).pipe(
+      map((response) =>
+        response.items.map((item) => ({
+          ...item,
+          id: typeof item.id === 'object' ? item.id.videoId : item.id,
+        })),
+      ),
+    );
+  }
+
+  private getVideoDetails(videos: YouTubeVideo[]): Observable<YouTubeVideo[]> {
+    const videoIds = videos.map((video) => video.id).join(',');
+    const params = new HttpParams().set('part', `${PART_VIDEO},${PART_STATISTICS}`).set('id', videoIds);
+
+    return this.http.get<YouTubeVideoDetailsResponse>(API_URL.videos, { params }).pipe(
+      map((detailsResponse) =>
+        detailsResponse.items.map((detail) => {
+          const video = videos.find((v) => v.id === detail.id);
+          if (video) {
+            return {
+              ...video,
+              statistics: {
+                ...detail.statistics,
+              },
+            };
+          }
+          return {
+            ...detail,
+            id: detail.id,
+          };
+        }),
+      ),
+    );
+  }
+
+  private getChannelInfo(videos: YouTubeVideo[]): Observable<YouTubeVideo[]> {
+    const channelIds = videos.map((video) => video.snippet.channelId).join(',');
+    const params = new HttpParams().set('part', PART_VIDEO).set('id', channelIds);
+
+    return this.http.get<YouTubeChannelResponse>(API_URL.channels, { params }).pipe(
+      map((channelResponse) =>
+        videos.map((video) => {
+          const channel = channelResponse.items.find((c) => c.id === video.snippet.channelId);
+          return { ...video, channelInfo: channel };
+        }),
+      ),
+    );
   }
 
   getMovies(): Observable<YouTubeVideo[]> {
@@ -53,16 +156,21 @@ export class SearchService {
     this.sortTypeSubject.next(sortType);
   }
 
+  getSearchText(): Observable<string> {
+    return this.searchTextSubject.asObservable();
+  }
+
+  setSearchText(searchText: string) {
+    this.searchTextSubject.next(searchText);
+    this.searchMovies(searchText);
+  }
+
   updateFeedback(movie: YouTubeVideo, feedback: FeedbackType) {
     const initialData = this.originalMovies.find((item) => item.id === movie.id);
     const currentData = this.movieList.find((item) => item.id === movie.id);
-    if (initialData && currentData) {
+    if (initialData && currentData && initialData.statistics && currentData.statistics) {
       currentData.statistics.likeCount =
         feedback === 'like' ? String(Number(initialData.statistics.likeCount) + 1) : initialData.statistics.likeCount;
-      currentData.statistics.dislikeCount =
-        feedback === 'dislike'
-          ? String(Number(initialData.statistics.dislikeCount) + 1)
-          : initialData.statistics.dislikeCount;
       currentData.statistics.feedback = feedback;
     }
     this.moviesSubject.next(this.movieList);

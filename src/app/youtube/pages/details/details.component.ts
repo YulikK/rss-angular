@@ -2,19 +2,24 @@ import { FeedbackType, YouTubeVideo } from '@/shared/types';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
 import { SearchService } from '../../services/search.service';
 import { SearchItemComponent } from '../../components/search-item/search-item.component';
+import { FindByIdPipe } from '../../pipes/findById/find-by-id.pipe';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [SearchItemComponent, RouterModule, MatButtonModule],
+  imports: [CommonModule, SearchItemComponent, RouterModule, MatButtonModule, FindByIdPipe],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailsComponent implements OnInit {
-  movie?: YouTubeVideo | null;
+  movies$: Observable<YouTubeVideo[]>;
+
+  id: string | null = null;
 
   private route: ActivatedRoute;
 
@@ -23,11 +28,12 @@ export class DetailsComponent implements OnInit {
   constructor(route: ActivatedRoute, searchService: SearchService) {
     this.route = route;
     this.searchService = searchService;
+    this.movies$ = searchService.getMovies();
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.movie = this.searchService.getMovieById(id);
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.searchService.searchMovies('', this.id || '');
   }
 
   onUpdateFeedback(event: { movie: YouTubeVideo; feedback: FeedbackType }) {

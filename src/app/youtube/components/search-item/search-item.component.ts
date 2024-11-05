@@ -47,7 +47,7 @@ export class SearchItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.feedback = this.movie.statistics.feedback || null;
+    this.feedback = this.movie.statistics?.feedback || null;
   }
 
   onFeedbackClick(action: FeedbackActionType) {

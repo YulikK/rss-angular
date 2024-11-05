@@ -53,6 +53,8 @@ export class HeaderComponent {
 
   filterText$: Observable<string>;
 
+  searchText$: Observable<string>;
+
   constructor(searchService: SearchService, authService: AuthService) {
     this.searchService = searchService;
     this.authService = authService;
@@ -60,6 +62,7 @@ export class HeaderComponent {
     this.isLoggedIn$ = this.authService.getIsLoggedIn();
     this.currentSortType$ = this.searchService.getSortType();
     this.filterText$ = this.searchService.getFilterText();
+    this.searchText$ = this.searchService.getSearchText();
   }
 
   onSortChange(value: string) {
@@ -68,6 +71,10 @@ export class HeaderComponent {
 
   onFilterChange(value: string) {
     this.searchService.setFilterText(value);
+  }
+
+  onSearchChange(value: string) {
+    this.searchService.setSearchText(value);
   }
 
   toggleSettingsShow() {

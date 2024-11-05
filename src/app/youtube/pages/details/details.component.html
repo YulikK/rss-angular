@@ -1,3 +1,5 @@
+@let currentMovie = movies$ | async | findById: id;
+
 <main class="flex flex-col items-center">
   <section class="max-w-[900px]">
     <div class="w-full flex justify-end">
@@ -8,10 +10,10 @@
       </a>
     </div>
 
-    @if (movie) {
+    @if (currentMovie) {
       <app-search-item
         [isDetailPage]="true"
-        [movie]="movie"
+        [movie]="currentMovie"
         (updateFeedback)="onUpdateFeedback($event)"
       ></app-search-item>
     } @else {

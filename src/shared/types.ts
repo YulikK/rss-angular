@@ -29,7 +29,7 @@ export interface Snippet {
   description: string;
   thumbnails: Thumbnails;
   channelTitle: string;
-  tags: string[];
+  tags?: string[];
   categoryId: string;
   liveBroadcastContent: string;
   localized: Localized;
@@ -42,13 +42,41 @@ export type FeedbackActionType = 'like' | 'dislike';
 export interface Statistics {
   viewCount: string;
   likeCount: string;
-  dislikeCount: string;
+  dislikeCount?: string;
   favoriteCount: string;
   commentCount: string;
   feedback?: FeedbackType;
 }
 
+export interface YouTubeChannel {
+  kind: string;
+  etag: string;
+  id: string;
+  snippet: Snippet;
+}
+
 export interface YouTubeVideo {
+  kind: string;
+  etag: string;
+  id: string;
+  snippet: Snippet;
+  statistics?: Statistics;
+  channelInfo?: YouTubeChannel;
+}
+
+export interface YouTubeVideoResponse {
+  kind: string;
+  etag: string;
+  id: {
+    kind: string;
+    videoId: string;
+  };
+  snippet: Snippet;
+  statistics?: Statistics;
+  channelInfo?: YouTubeChannel;
+}
+
+export interface YouTubeDetailsVideoResponse {
   kind: string;
   etag: string;
   id: string;
@@ -60,10 +88,20 @@ export interface YouTubeVideoListResponse {
   kind: string;
   etag: string;
   pageInfo: PageInfo;
-  items: YouTubeVideo[];
+  items: YouTubeVideoResponse[];
 }
 
+export interface YouTubeVideoDetailsResponse {
+  kind: string;
+  etag: string;
+  pageInfo: PageInfo;
+  items: YouTubeDetailsVideoResponse[];
+}
 export interface Feedback {
   movie: YouTubeVideo;
   feedback: FeedbackType;
+}
+
+export interface YouTubeChannelResponse {
+  items: YouTubeChannel[];
 }
