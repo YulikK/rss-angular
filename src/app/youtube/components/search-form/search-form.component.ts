@@ -1,17 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 const MIN_LENGTH = 3;
 const DEBOUNCE_TIME = 300;
@@ -26,21 +19,46 @@ const DEBOUNCE_TIME = 300;
   encapsulation: ViewEncapsulation.None,
 })
 export class SearchFormComponent implements OnInit {
-  searchControl = new FormControl('');
+  formControl = new FormGroup({
+    searchText: new FormControl(''),
+  });
 
-  @Input() searchText: string = '';
-
-  @Output() searchChange = new EventEmitter<string>();
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
-    this.searchControl.valueChanges
-      .pipe(
+    this.route.queryParams.subscribe((params) => {
+      const searchText = params['search'] || '';
+      this.formControl.get('searchText')?.setValue(searchText, { emitEvent: false });
+    });
+
+    this.formControl
+      .get('searchText')
+      ?.valueChanges.pipe(
         filter((value): value is string => value !== null && value.length >= MIN_LENGTH),
         debounceTime(DEBOUNCE_TIME),
         distinctUntilChanged(),
       )
       .subscribe((searchText) => {
-        this.searchChange.emit(searchText);
+        if (searchText) {
+          this.updateQueryParams(searchText);
+        }
       });
+  }
+
+  onSubmit(): void {
+    const searchText = this.formControl.get('searchText')?.value;
+    this.updateQueryParams(searchText || '');
+  }
+
+  private updateQueryParams(searchText: string): void {
+    const queryParams = searchText ? { search: searchText } : { search: null };
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'merge',
+    });
   }
 }

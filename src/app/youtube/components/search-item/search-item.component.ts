@@ -9,8 +9,9 @@ import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { FreshColorDirective } from '../../directives/fresh-color.directive';
 import { NumberFormatPipe } from '../../pipes/number-format/number-format.pipe';
-import { WindowSizeService } from '../../services/window-size.service';
+
 import { ThumbnailSrcPipe } from '../../pipes/thumbnail-src/thumbnail-src.pipe';
+import { WindowSizeService } from '../../services/window-size/window-size.service';
 
 @Component({
   selector: 'app-search-item',

@@ -119,3 +119,9 @@ export type PasswordStrenght = {
     hasMinimumLength: boolean;
   };
 };
+
+export interface NavigationServiceType {
+  searchText: string;
+  id: string | null;
+  isMainPage: boolean;
+}

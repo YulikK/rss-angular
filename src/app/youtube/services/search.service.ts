@@ -1,33 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, iif, map, Observable, of, switchMap } from 'rxjs';
-import {
-  FeedbackAction,
-  FeedbackType,
-  YouTubeChannelResponse,
-  YouTubeVideo,
-  YouTubeVideoDetailsResponse,
-  YouTubeVideoListResponse,
-} from '@/shared/types';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, iif, Observable, of, switchMap } from 'rxjs';
+import { FeedbackType, YouTubeVideo } from '@/shared/types';
+import { NavigationService } from '@/app/core/services/navigation/navigation.service';
+import { YoutubeApiService } from './youtube-api/youtube-api.service';
 
-const MAX_RESULTS = '15';
-const CHART = 'mostPopular';
-const PART_VIDEO = 'snippet';
-const PART_STATISTICS = 'statistics';
-const API_URL = {
-  search: 'search',
-  videos: 'videos',
-  channels: 'channels',
-};
 @Injectable({
   providedIn: 'root',
 })
 export class SearchService {
   readonly sortOptions: string[] = ['New', 'Popular', 'Old'];
-
-  private originalMovies: YouTubeVideo[] = [];
-
-  private movieList: YouTubeVideo[] = [];
 
   private moviesSubject: BehaviorSubject<YouTubeVideo[]> = new BehaviorSubject<YouTubeVideo[]>([]);
 
@@ -35,94 +16,29 @@ export class SearchService {
 
   private sortTypeSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  private searchTextSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  constructor(
+    private youtubeApiService: YoutubeApiService,
+    private navigationService: NavigationService,
+  ) {
+    this.navigationService.getNavigation().subscribe((navigation) => {
+      if (navigation.isMainPage) {
+        this.searchMovies(navigation.searchText);
+      } else if (navigation.id) {
+        this.searchMovies(navigation.id, true);
+      }
+    });
+  }
 
-  private isDataLoaded = false;
-
-  constructor(private http: HttpClient) {}
-
-  searchMovies(searchText?: string, id?: string): void {
-    if (this.isDataLoaded && !searchText && !id) {
-      this.moviesSubject.next(this.movieList);
-      return;
-    }
-
-    if (id && this.movieList.some((movie) => movie.id === id)) {
-      this.moviesSubject.next(this.movieList);
-      return;
-    }
-
-    this.searchVideos(searchText, id)
+  searchMovies(value: string, isId: boolean = false): void {
+    this.youtubeApiService
+      .searchVideos(value, isId)
       .pipe(
-        switchMap((videos) => iif(() => !id, this.getVideoDetails(videos), of(videos))),
-        switchMap((videosWithDetails) => this.getChannelInfo(videosWithDetails)),
+        switchMap((videos) => iif(() => !isId, this.youtubeApiService.getVideoDetails(videos), of(videos))),
+        switchMap((videosWithDetails) => this.youtubeApiService.getChannelInfo(videosWithDetails)),
       )
       .subscribe((movies) => {
-        this.originalMovies = movies;
-        this.movieList = JSON.parse(JSON.stringify(this.originalMovies));
-        this.isDataLoaded = true;
-        this.moviesSubject.next(this.movieList);
+        this.moviesSubject.next(movies);
       });
-  }
-
-  private searchVideos(searchText?: string, id?: string): Observable<YouTubeVideo[]> {
-    let params = new HttpParams().set('type', 'video').set('part', PART_VIDEO).set('maxResults', MAX_RESULTS);
-
-    if (id) {
-      params = params.set('id', id);
-    } else if (searchText) {
-      params = params.set('q', searchText);
-    } else {
-      params = params.set('chart', CHART);
-    }
-
-    return this.http.get<YouTubeVideoListResponse>(id ? API_URL.videos : API_URL.search, { params }).pipe(
-      map((response) =>
-        response.items.map((item) => ({
-          ...item,
-          id: typeof item.id === 'object' ? item.id.videoId : item.id,
-        })),
-      ),
-    );
-  }
-
-  private getVideoDetails(videos: YouTubeVideo[]): Observable<YouTubeVideo[]> {
-    const videoIds = videos.map((video) => video.id).join(',');
-    const params = new HttpParams().set('part', `${PART_VIDEO},${PART_STATISTICS}`).set('id', videoIds);
-
-    return this.http.get<YouTubeVideoDetailsResponse>(API_URL.videos, { params }).pipe(
-      map((detailsResponse) =>
-        detailsResponse.items.map((detail) => {
-          const video = videos.find((v) => v.id === detail.id);
-          if (video) {
-            return {
-              ...video,
-              statistics: {
-                ...detail.statistics,
-              },
-            };
-          }
-          return {
-            ...detail,
-            id: detail.id,
-          };
-        }),
-      ),
-    );
-  }
-
-  private getChannelInfo(videos: YouTubeVideo[]): Observable<YouTubeVideo[]> {
-    const channelIds = videos.map((video) => video.snippet.channelId).join(',');
-    const params = new HttpParams().set('part', PART_VIDEO).set('id', channelIds);
-
-    return this.http.get<YouTubeChannelResponse>(API_URL.channels, { params }).pipe(
-      map((channelResponse) =>
-        videos.map((video) => {
-          const channel = channelResponse.items.find((c) => c.id === video.snippet.channelId);
-          return { ...video, channelInfo: channel };
-        }),
-      ),
-    );
   }
 
   getMovies(): Observable<YouTubeVideo[]> {
@@ -130,7 +46,7 @@ export class SearchService {
   }
 
   getMovieById(id: string | null): YouTubeVideo | null {
-    return this.movieList.find((movie) => movie.id === id) || null;
+    return this.moviesSubject.value.find((movie) => movie.id === id) || null;
   }
 
   getSortOptions(): string[] {
@@ -153,25 +69,7 @@ export class SearchService {
     this.sortTypeSubject.next(sortType);
   }
 
-  getSearchText(): Observable<string> {
-    return this.searchTextSubject.asObservable();
-  }
-
-  setSearchText(searchText: string) {
-    this.searchTextSubject.next(searchText);
-    this.searchMovies(searchText);
-  }
-
   updateFeedback(movie: YouTubeVideo, feedback: FeedbackType) {
-    const initialData = this.originalMovies.find((item) => item.id === movie.id);
-    const currentData = this.movieList.find((item) => item.id === movie.id);
-    if (initialData && currentData && initialData.statistics && currentData.statistics) {
-      currentData.statistics.likeCount =
-        feedback === FeedbackAction.LIKE
-          ? String(Number(initialData.statistics.likeCount) + 1)
-          : initialData.statistics.likeCount;
-      currentData.statistics.feedback = feedback;
-    }
-    this.moviesSubject.next(this.movieList);
+    console.log('movie', movie, feedback);
   }
 }

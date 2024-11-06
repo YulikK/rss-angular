@@ -1,5 +1,5 @@
-<form class="flex justify-center items-center gap-2">
+<form [formGroup]="formControl" (ngSubmit)="onSubmit()" class="flex justify-center items-center gap-2">
   <mat-form-field appearance="outline" class="my-input">
-    <input matInput [formControl]="searchControl" name="searchText" placeholder="Search" />
+    <input matInput formControlName="searchText" name="searchText" placeholder="Search" />
   </mat-form-field>
 </form>

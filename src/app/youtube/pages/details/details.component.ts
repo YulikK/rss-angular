@@ -4,6 +4,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { NavigationService } from '@/app/core/services/navigation/navigation.service';
+import { ROUTES } from '@/shared/constant';
 import { SearchService } from '../../services/search.service';
 import { SearchItemComponent } from '../../components/search-item/search-item.component';
 import { FindByIdPipe } from '../../pipes/findById/find-by-id.pipe';
@@ -20,18 +22,23 @@ import { NoResultsComponent } from '../../components/no-results/no-results.compo
 export class DetailsComponent implements OnInit {
   movies$: Observable<YouTubeVideo[]>;
 
+  searchText$: Observable<string>;
+
   id: string | null = null;
+
+  readonly homePage = `/${ROUTES.HOME}`;
 
   constructor(
     private route: ActivatedRoute,
     private searchService: SearchService,
+    private navigationService: NavigationService,
   ) {
     this.movies$ = searchService.getMovies();
+    this.searchText$ = navigationService.getSearchText();
   }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.searchService.searchMovies('', this.id || '');
   }
 
   onUpdateFeedback(event: { movie: YouTubeVideo; feedback: FeedbackType }) {

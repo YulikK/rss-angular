@@ -1,15 +1,17 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SearchService } from '@/app/youtube/services/search.service';
 import { SearchFormComponent } from '@/app/youtube/components/search-form/search-form.component';
 import { SortOptionsComponent } from '@/app/youtube/components/sort-options/sort-options.component';
 import { FilterFormComponent } from '@/app/youtube/components/filter-form/filter-form.component';
 import { MatButtonModule } from '@angular/material/button';
-import { filter, map, Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { ROUTES } from '@/shared/constant';
+import { NavigationServiceType } from '@/shared/types';
+import { NavigationService } from '../../services/navigation/navigation.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -47,7 +49,7 @@ import { ROUTES } from '@/shared/constant';
     ]),
   ],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   isSettingsShow = false;
 
   isLoggedIn$!: Observable<boolean>;
@@ -58,29 +60,20 @@ export class HeaderComponent implements OnInit {
 
   filterText$: Observable<string>;
 
-  searchText$: Observable<string>;
-
-  isHomeRoute$!: Observable<boolean>;
+  navigation$: Observable<NavigationServiceType>;
 
   readonly homePage = `/${ROUTES.HOME}`;
 
   constructor(
     private searchService: SearchService,
     private authService: AuthService,
-    private router: Router,
+    private navigationService: NavigationService,
   ) {
     this.sortOptions = this.searchService.getSortOptions();
     this.isLoggedIn$ = this.authService.getIsLoggedIn();
     this.currentSortType$ = this.searchService.getSortType();
     this.filterText$ = this.searchService.getFilterText();
-    this.searchText$ = this.searchService.getSearchText();
-  }
-
-  ngOnInit(): void {
-    this.isHomeRoute$ = this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map((event: NavigationEnd) => event.urlAfterRedirects === this.homePage),
-    );
+    this.navigation$ = this.navigationService.getNavigation();
   }
 
   onSortChange(value: string) {
@@ -89,10 +82,6 @@ export class HeaderComponent implements OnInit {
 
   onFilterChange(value: string) {
     this.searchService.setFilterText(value);
-  }
-
-  onSearchChange(value: string) {
-    this.searchService.setSearchText(value);
   }
 
   toggleSettingsShow() {

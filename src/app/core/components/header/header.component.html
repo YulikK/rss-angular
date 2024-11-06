@@ -5,10 +5,10 @@
         <img src="assets/img/logo.svg" alt="Youtube-app logo" aria-hidden="false" aria-label="Youtube-app icon" />
       </a>
     </div>
-    @if ((isLoggedIn$ | async) && (isHomeRoute$ | async)) {
+    @if ((isLoggedIn$ | async) && (this.navigation$ | async)?.isMainPage) {
       <div class="flex flex-col justify-center items-center">
         <div class="flex items-center gap-2">
-          <app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
+          <app-search-form></app-search-form>
           <button mat-icon-button type="submit" (click)="toggleSettingsShow()" [class]="isSettingsShow ? 'on' : 'off'">
             <img src="assets/img/settings.svg" alt="settings icon" aria-hidden="false" aria-label="settings icon" />
           </button>
