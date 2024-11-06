@@ -13,27 +13,36 @@ export class NavigationService {
   private navigationSubject = new BehaviorSubject<NavigationServiceType>({
     searchText: '',
     id: null,
-    isMainPage: false,
+    isMainPage: true,
+    isReady: false,
   });
 
   constructor(private router: Router) {
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      const { url } = this.router;
+      const navigationParams = this.makeNavigationParams();
 
-      const urlSegments = url.split('/');
-      const id = urlSegments[urlSegments.length - 1];
-      const queryParams = new URLSearchParams(window.location.search);
-      const searchText = queryParams.get('search') || '';
-      if (url.includes(`${ROUTES.HOME}`)) {
-        this.searchTextSubject.next(searchText);
+      if (navigationParams.isMainPage && navigationParams.searchText) {
+        this.searchTextSubject.next(navigationParams.searchText);
       }
 
-      this.navigationSubject.next({
-        searchText,
-        id: url.includes('/details/') && id ? id : null,
-        isMainPage: url.includes(`${ROUTES.HOME}`),
-      });
+      this.navigationSubject.next(navigationParams);
     });
+  }
+
+  makeNavigationParams(): NavigationServiceType {
+    const { url } = this.router;
+    const urlSegments = url.split('/');
+    const id = urlSegments[urlSegments.length - 1];
+    const queryParams = new URLSearchParams(window.location.search);
+    const searchText = queryParams.get('search') || '';
+    const isMainPage = url.includes(`${ROUTES.HOME}`);
+
+    return {
+      searchText,
+      id: url.includes('/details/') && id ? id : null,
+      isMainPage,
+      isReady: url !== '/',
+    };
   }
 
   getNavigation(): Observable<NavigationServiceType> {

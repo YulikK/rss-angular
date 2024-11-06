@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, iif, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FeedbackType, YouTubeVideo } from '@/shared/types';
 import { NavigationService } from '@/app/core/services/navigation/navigation.service';
 import { YoutubeApiService } from './youtube-api/youtube-api.service';
@@ -21,24 +21,18 @@ export class SearchService {
     private navigationService: NavigationService,
   ) {
     this.navigationService.getNavigation().subscribe((navigation) => {
-      if (navigation.isMainPage) {
-        this.searchMovies(navigation.searchText);
-      } else if (navigation.id) {
-        this.searchMovies(navigation.id, true);
+      if (navigation.isReady) {
+        const value = navigation.isMainPage ? navigation.searchText : navigation.id || '';
+        const isId = !navigation.isMainPage && navigation.id !== null;
+        this.updateMovieList(value, isId);
       }
     });
   }
 
-  searchMovies(value: string, isId: boolean = false): void {
-    this.youtubeApiService
-      .searchVideos(value, isId)
-      .pipe(
-        switchMap((videos) => iif(() => !isId, this.youtubeApiService.getVideoDetails(videos), of(videos))),
-        switchMap((videosWithDetails) => this.youtubeApiService.getChannelInfo(videosWithDetails)),
-      )
-      .subscribe((movies) => {
-        this.moviesSubject.next(movies);
-      });
+  updateMovieList(value: string, isId: boolean = false): void {
+    this.youtubeApiService.getMovies(value, isId).subscribe((movies) => {
+      this.moviesSubject.next(movies);
+    });
   }
 
   getMovies(): Observable<YouTubeVideo[]> {

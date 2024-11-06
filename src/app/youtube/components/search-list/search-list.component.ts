@@ -29,10 +29,6 @@ export class SearchListComponent {
     this.sortType$ = searchService.getSortType();
   }
 
-  // ngOnInit(): void {
-  //   this.searchService.searchMovies('');
-  // }
-
   onUpdateFeedback(event: { movie: YouTubeVideo; feedback: FeedbackType }) {
     this.searchService.updateFeedback(event.movie, event.feedback);
   }
